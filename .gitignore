@@ -1,0 +1,45 @@
+# --- secrets / runtime state ---
+.env
+.env.local
+.env.*.local
+
+# bot runtime state — positions, decisions, equity, cached broker views
+state/
+**/state/
+
+# market data cache, third-party PDFs / extracts
+data/
+**/data/
+
+# --- python ---
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.tox/
+
+# --- venv ---
+venv/
+.venv/
+env/
+
+# --- editor / OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# --- logs ---
+*.log
+logs/
+
+# --- build / packaging ---
+build/
+dist/
+*.whl

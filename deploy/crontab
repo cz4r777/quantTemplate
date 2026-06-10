@@ -1,0 +1,20 @@
+# tradingbot cron — add with: crontab -e  (paste these lines)
+# Times are server local time; set TZ if your server is not ET.
+TZ=America/New_York
+REPO=/home/USER/tradingbot
+PY=/home/USER/tradingbot/venv/bin/python
+
+# Weekly watchlist refresh (Monday 08:55 ET, before the open)
+30 19 * * 0  cd $REPO && $PY scripts/build_nasdaq100.py >> state/cron.log 2>&1
+0 20 * * 0   cd $REPO && $PY scripts/build_sp500_top50.py >> state/cron.log 2>&1
+55 8 * * 1  cd $REPO && $PY scripts/build_watchlist.py >> state/cron.log 2>&1
+
+# Main trade cycle — every 15 minutes during market hours, Mon-Fri
+*/15 9-15 * * 1-5  cd $REPO && $PY main.py >> state/cron.log 2>&1
+0 16 * * 1-5       cd $REPO && $PY main.py >> state/cron.log 2>&1
+
+# Daily scan (pre-market 08:45 ET) — updates state/scan.json
+45 8 * * 1-5  cd $REPO && $PY scripts/scan.py --no-fundamentals >> state/cron.log 2>&1
+
+# Watchdog — SMS alert if dashboard is unreachable (every 5 min)
+*/5 * * * *  curl -sf http://127.0.0.1:8080/state > /dev/null || curl -s -X POST http://127.0.0.1:8001/send-message -H 'Content-Type: application/json' -d '{"category":"warnings","message":"dashboard down"}' >/dev/null

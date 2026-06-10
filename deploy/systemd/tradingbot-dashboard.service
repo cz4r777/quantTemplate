@@ -1,0 +1,17 @@
+[Unit]
+Description=TradingBot Dashboard (FastAPI)
+After=network.target
+
+[Service]
+Type=simple
+User=%i
+WorkingDirectory=/home/%i/tradingbot
+Environment="PATH=/home/%i/tradingbot/venv/bin"
+ExecStart=/home/%i/tradingbot/venv/bin/uvicorn dashboard.app:app --host 0.0.0.0 --port 8080
+Restart=on-failure
+RestartSec=5
+StandardOutput=append:/home/%i/tradingbot/state/dashboard.log
+StandardError=append:/home/%i/tradingbot/state/dashboard.log
+
+[Install]
+WantedBy=multi-user.target

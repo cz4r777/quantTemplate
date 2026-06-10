@@ -1,0 +1,20 @@
+[Unit]
+Description=IB Gateway managed by IBC Alpha
+After=network.target
+Before=tradingbot-dashboard.service
+
+[Service]
+Type=simple
+User=%i
+WorkingDirectory=/home/%i/ibc
+Environment="DISPLAY=:99"
+# Xvfb provides a virtual framebuffer so IB Gateway (Java GUI) can run headless
+ExecStartPre=/usr/bin/Xvfb :99 -screen 0 1024x768x16
+ExecStart=/home/%i/ibc/gatewaystart.sh
+Restart=on-failure
+RestartSec=30
+StandardOutput=append:/home/%i/tradingbot/state/ibc.log
+StandardError=append:/home/%i/tradingbot/state/ibc.log
+
+[Install]
+WantedBy=multi-user.target
